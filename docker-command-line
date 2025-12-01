@@ -1,0 +1,7 @@
+#if you want to run the docker deamon as a non root user 
+   54  usermod -aG docker lab-user
+###lets learn about some docker command. 
+  docker info
+  #if you want to see all the command related to docker container or build images
+  docker 
+  ###lets create our first container
