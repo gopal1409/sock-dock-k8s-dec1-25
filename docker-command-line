@@ -72,7 +72,7 @@ docker run -d  --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD -v mysql-db:/var/lib/m
 ##lets check ti created the database and the volume or not 
 docker ps
 docker container inspect mysql
-docker volume inspect mysql 
+docker volume inspect mysql-db
 ##this will show the database storage path in your local machine 
  74  cd /var/lib/docker/volumes/mysql-db/_data
    75  ls
