@@ -92,3 +92,33 @@ exit
  74  cd /var/lib/docker/volumes/mysql-db/_data
    75  ls
 #the above commadn will show that the folder with the name employess i created
+#lets upgrade the db 
+#check the db image version 
+[root@ip-172-31-93-196 _data]$ docker ps
+CONTAINER ID   IMAGE       COMMAND                  CREATED             STATUS             PORTS                                                    NAMES
+fc2cfbc23aa0   mysql:8.0   "docker-entrypoint.s…"   40 minutes ago      Up 40 minutes      3306/tcp, 33060/tcp 
+#it is mysql 8.0
+#lets stop it and delete it 
+docker stop mysql
+docker rm mysql
+###lets create the container with new image 
+ docker run -d  --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=true -v mysql-db:/var/lib/mysql mysql:8.0.44
+##once created lets verify 
+[root@ip-172-31-93-196 _data]$ docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED             STATUS             PORTS                                                    NAMES
+246bee94c475   mysql:8.0.44   "docker-entrypoint.s…"   3 seconds ago       Up 3 seconds       3306/tcp, 33060/tcp        
+#this show container is running with 8.0.44 image version
+#3next we need to check the db is mounted with my previous storage
+[root@ip-172-31-93-196 _data]$ docker exec -it mysql bash
+
+bash-5.1# mysql -u root -p
+Enter password:
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| employee           |
+#you can see the db is attached with previous storage
+exit
+exit
