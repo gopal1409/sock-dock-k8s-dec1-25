@@ -28,3 +28,23 @@ curl localhost
    50  docker ps
    51  docker ps -a
 ############################## --detach mode it will make your container run as bacground process deamon process. it will run as foreground
+#container vs process id. 
+#we will create a mongo db container
+ 57  docker run --name mongo -d mongo
+   58  docker ps
+#lets check the process id of the mongo db container
+   61  docker top mongo
+   62  ps aux
+#match the process id of the mongo db container
+   63  docker top mongo
+   64  docker ps
+##to kill the mongo db container kindly change the process id with your own processid
+   
+   66  sudo kill -9 10908
+#this will not show the mongodb contianer
+   67  docker ps
+#this will show the mongo db contianer in exit state 
+   68  docker ps -a
+   69  docker start mongo
+   70  docker ps
+
