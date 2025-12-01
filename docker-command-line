@@ -48,3 +48,19 @@ curl localhost
    69  docker start mongo
    70  docker ps
 
+#lets create a docker container and login inside it
+ 74  docker run -d -p 3306:3306 --name db -e MYSQL_RANDOM_ROOT_PASSWORD=true mysql
+   75  docker ps
+#the below command will show the generated password copy it 
+   76  docker logs db
+   77  docker exec -it db bash
+#lets login inside the mysql db 
+mysql -u root -p
+##paste the password
+#you will get the mysql prompt
+show databases;
+create database employee;
+show databases;
+##lets exit mysql and container 
+exit
+exit
