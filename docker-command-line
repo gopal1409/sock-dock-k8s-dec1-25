@@ -68,7 +68,7 @@ exit
 sudo -i
 docker stop mysql 
 docker rm mysql
-docker run -d  --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD -v mysql-db:/var/lib/mysql mysql:8.0
+docker run -d  --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=true -v mysql-db:/var/lib/mysql mysql:8.0
 ##lets check ti created the database and the volume or not 
 docker ps
 docker container inspect mysql
