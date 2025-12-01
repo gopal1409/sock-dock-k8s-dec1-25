@@ -64,3 +64,29 @@ show databases;
 ##lets exit mysql and container 
 exit
 exit
+##lets learn about volume in container 
+sudo -i
+docker run -d -p 3306:3306 --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD -v mysql-db:/var/lib/mysql mysql:8.0
+##lets check ti created the database and the volume or not 
+docker ps
+docker container inspect mysql
+docker volume inspect mysql 
+##this will show the database storage path in your local machine 
+ 74  cd /var/lib/docker/volumes/mysql-db/_data
+   75  ls
+#now we will login inside mysql container and create a database it should reflect in this path 
+  77  docker exec -it mysql bash
+#3once you login 
+mysql -u root -p
+###press enter 
+show databases;
+create database employee;
+#below command will show an database is being created
+show databases;
+#create another database with your name 
+exit
+exit
+#lets verify the foot print in our storage area
+ 74  cd /var/lib/docker/volumes/mysql-db/_data
+   75  ls
+#the above commadn will show that the folder with the name employess i created
