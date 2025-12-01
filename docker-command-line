@@ -11,3 +11,20 @@
 #lets test the image
 curl localhost
 ##copy the dns name and paste it in the browser you will see the test page
+#you can check all your images
+35  docker images
+#second time when i run a container with the same image it will not go to hub.docker.com and download the image
+   36  docker container run --publish 81:80 --detach nginx
+   37  docker ps
+#######################################lets create an apache server 
+ 41  docker container run --publish 82:80 --detach httpd
+   42  docker ps
+   43  curl localhost:82
+   44  docker images
+##you can check the same in the browser using dns:82
+#################################lets try to undestand the --detach mode
+ 49  docker container run --publish 83:80  httpd
+#press ctrl c to come out of the terminal
+   50  docker ps
+   51  docker ps -a
+############################## --detach mode it will make your container run as bacground process deamon process. it will run as foreground
