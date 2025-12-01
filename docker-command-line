@@ -5,3 +5,9 @@
   #if you want to see all the command related to docker container or build images
   docker 
   ###lets create our first container
+ 61  docker container run --publish 80:80 --detach nginx
+   62  docker ps
+   63  docker images
+#lets test the image
+curl localhost
+##copy the dns name and paste it in the browser you will see the test page
