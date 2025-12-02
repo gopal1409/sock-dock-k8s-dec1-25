@@ -9,4 +9,9 @@ bash <(curl -s https://raw.githubusercontent.com/killer-sh/cks-course-environmen
 ##once you get the output copy it paste in the worker node you will see the worker node has join 
 #then go back to master machine 
 kubectl get nodes
-
+#k8s component work as container
+to verify
+kubectl get pod -A
+#then use the crictl command line 
+crictl ps
+crictl images
