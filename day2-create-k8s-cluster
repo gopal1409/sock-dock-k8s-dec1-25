@@ -4,3 +4,9 @@ bash <(curl -s https://raw.githubusercontent.com/killer-sh/cks-course-environmen
 # worker
 bash <(curl -s https://raw.githubusercontent.com/killer-sh/cks-course-environment/master/cluster-setup/previous/install_worker.sh)
 
+#in the master node you need to run a command to generate the worker node joining command 
+ kubeadm token create --print-join-command
+##once you get the output copy it paste in the worker node you will see the worker node has join 
+#then go back to master machine 
+kubectl get nodes
+
