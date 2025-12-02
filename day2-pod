@@ -1,0 +1,16 @@
+ 50  nano pod.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+
+   51  kubectl apply -f pod.yml
+   52  kubectl get pod
+   53  kubectl describe nginx
+   54  kubectl describe pod nginx
