@@ -1,0 +1,62 @@
+sudo -i
+  ###lets check the network ADAPTER in our system
+  #we have loop back and ethernet adapter
+  [root@ip-172-31-93-198 ~]$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute
+       valid_lft forever preferred_lft forever
+2: ens5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc mq state UP group default qlen 1000
+    link/ether 0a:ca:56:c5:9f:47 brd ff:ff:ff:ff:ff:ff
+    altname enp0s5
+    inet 172.31.93.198/18 metric 100 brd 172.31.127.255 scope global dynamic ens5
+       valid_lft 3529sec preferred_lft 3529sec
+    inet6 2406:da1b:cd6:7ed2:5a1b:db3d:fbc5:3434/128 scope global dynamic noprefixroute
+       valid_lft 424sec preferred_lft 114sec
+    inet6 fe80::8ca:56ff:fec5:9f47/64 scope link
+       valid_lft forever preferred_lft forever
+##lets install docker 
+      https://docs.docker.com/engine/install/ubuntu/
+      [root@ip-172-31-93-198 ~]$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute
+       valid_lft forever preferred_lft forever
+2: ens5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc mq state UP group default qlen 1000
+    link/ether 0a:ca:56:c5:9f:47 brd ff:ff:ff:ff:ff:ff
+    altname enp0s5
+    inet 172.31.93.198/18 metric 100 brd 172.31.127.255 scope global dynamic ens5
+       valid_lft 3249sec preferred_lft 3249sec
+    inet6 2406:da1b:cd6:7ed2:5a1b:db3d:fbc5:3434/128 scope global dynamic noprefixroute
+       valid_lft 416sec preferred_lft 106sec
+    inet6 fe80::8ca:56ff:fec5:9f47/64 scope link
+       valid_lft forever preferred_lft forever
+3: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 4a:c2:e8:d5:8e:30 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+
+      ##lets create our first container
+        46  docker run -d -p 80:80 nginx
+   47  docker ps
+      #once you create the container if you look into your all ethernet adapter you will find that a vth connection for your container is created which is like an vlan
+   48  ip a
+   49  clear
+   50  docker ps
+
+      #this will not allow you to run container on same port number
+   51  docker run -d -p 80:80 nginx
+      #try to run this multiple time you will find that container are running internally with same port
+   52  docker run -d  nginx
+         52  docker run -d  nginx
+
+         52  docker run -d  nginx
+
+   53  docker ps
+   54  docker network ls
+      #why they are ruynning internally with same port is due to docker networkign which allocate local ip to the cotnainer
+   55  docker network inspect bridge
