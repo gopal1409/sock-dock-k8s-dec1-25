@@ -59,3 +59,14 @@ ENTRYPOINT ["java","-jar","app.jar"]
 ###copy the multi build image id and replace it 
 #if you look into image history you will find that the image is build on top of an readable image
  54  docker image history b9497af5d43
+#lets upload the image in the repo
+60  docker images
+   61  docker image tag
+#below change the image id to your image id also you need to provide the name of the repo replace gopal1409 with your repo name
+   62  docker image tag b9497af5d43c gopal1409/multiapp
+   63  docker images
+#docker login will give you the url copy paste in the browser copy the 6 word key once you confirm you will get the login succed 
+   64  docker login
+#check the name of the image and push it
+docker images
+   65  docker push gopal1409/multiapp:latest
