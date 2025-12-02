@@ -1,0 +1,37 @@
+#lets install openjdk and maven
+   86  apt install default-jdk
+   87  apt install maven
+  #lets clone the maven application
+   88  git clone https://github.com/gopal1409/spring-hello.git
+   89  cd spring-hello/
+     #compile it
+   90  mvn clean package
+   91  ls target/
+     #run it
+   92  java -jar ./target/spring-boot-2-hello-world-1.0.2-SNAPSHOT.jar
+     #to access the application outside your environment copy the dns name you have to change the dns name
+     lab-as-23518.lc.cl-labs.springpeople.com:8080/hello
+#then press ctrl c to close the application
+       #now we will convert the application into an container based image. 
+       #to convert your app into an contianer based image in the root folder you need to create a file called as docker file 
+        96  touch dockerfile
+   97  nano dockerfile
+####inside the file add this lines 
+#the base image we will use to build your container
+FROM eclipse-temurin:8u472-b08-jre-ubi9-minimal
+#inside your image if you want to create a directroy
+WORKDIR /app
+COPY ./target/spring-boot-2-hello-world-1.0.2-SNAPSHOT.jar /app/app.jar
+#expose application port
+EXPOSE 8080
+#to execute the application
+ENTRYPOINT ["java","-jar","/app/app.jar"]
+##to save the file in nano editor press ctrl x press y and enter
+       #once saved lets build the contianer image
+       docker build -t myapp .
+       ##once image has been build we need to verify the samne
+       docker images
+       ##once you can see the image lets create a container out of this image
+       docker container run -d -p 82:8080 myapp
+       ##you can test it by puttinmg the dns in the browser but this time it si coming from the docker kindly change the dns name toy our docker machine dns
+       http://lab-as-23518.lc.cl-labs.springpeople.com:82/hello
