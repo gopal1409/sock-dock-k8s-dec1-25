@@ -14,3 +14,18 @@ spec:
    52  kubectl get pod
    53  kubectl describe nginx
    54  kubectl describe pod nginx
+#explanation of the pod 
+#kubectl apply -f nameoftheyaml file 
+#when you run your yaml file it will execute from top to bottom and left to right
+#we are creating a pod 
+apiVersion: v1 #this is the version of the pod api
+kind: Pod #this is the name of the api we are using
+metadata:
+  name: nginx #using meta data name we are giving a name to our pod
+spec: #this is the specification of the pod
+  containers: #inside the pod we are defining the containers
+  - name: nginx #this is the name of the container
+    image: nginx:1.14.2 #the image we used for the container
+    ports:
+    - containerPort: 80 #container is runnign on which port
+######################
