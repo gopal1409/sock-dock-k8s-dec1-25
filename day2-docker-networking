@@ -60,3 +60,20 @@ sudo -i
    54  docker network ls
       #why they are ruynning internally with same port is due to docker networkign which allocate local ip to the cotnainer
    55  docker network inspect bridge
+#lets create a custom network
+ 64  docker network ls
+   65  docker network
+#we will create a custom network 
+   66  docker network create my_app_net
+   67  docker network ls
+#in this custom network we will create two container and attach with the custom network 
+  71  docker run -d --name my_nginx --network my_app_net nginx
+   72  docker run -d --name new_nginx --network my_app_net nginx
+   73  docker ps
+##once created we need to verify that this two container are attached with your custom network
+76  docker network ls
+#below command will show that both the container are in same network
+   77  docker network inspect my_app_net
+##if they are in same network we can send a curl request from one container to another and it will respond
+  81  docker exec -it new_nginx curl my_nginx
+   82  docker exec -it my_nginx curl new_nginx
