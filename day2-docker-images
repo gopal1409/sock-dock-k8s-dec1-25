@@ -35,3 +35,27 @@ ENTRYPOINT ["java","-jar","/app/app.jar"]
        docker container run -d -p 82:8080 myapp
        ##you can test it by puttinmg the dns in the browser but this time it si coming from the docker kindly change the dns name toy our docker machine dns
        http://lab-as-23518.lc.cl-labs.springpeople.com:82/hello
+#lets do multi build where compilation and build of the app will be done inside the container also it is going to convert the app into an contianer based image 
+cd /root/spring-hello
+rm dockerfile
+#lets create the multi build docker file 
+nano dockerfile
+#$stage1 build the spring boot application
+FROM maven:4.0.0-rc-5-ibm-semeru-25-noble AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
+RUN mvn package -DskipTests
+#stage2 create the final dockerfile
+FROM eclipse-temurin:21-jdk-jammy
+WORKDIR /app
+EXPOSE 8080
+COPY --from=build /app/target/*.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
+####lets build it when you build you will see the first stage shows that it is compiling the application then convert into an container based image 
+ 49  docker build -t multiapp .
+   50  docker images
+###copy the multi build image id and replace it 
+#if you look into image history you will find that the image is build on top of an readable image
+ 54  docker image history b9497af5d43
