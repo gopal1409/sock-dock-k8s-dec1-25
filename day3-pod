@@ -25,4 +25,5 @@
    92  kubectl get pod
    93  kubectl describe pod my-own-pod
    94  kubectl get pod
-
+#how to check the logs of the pod
+ kubectl logs my-own-pod
