@@ -19,3 +19,10 @@
    82  kubectl describe pod my-first-pod
   ######exercise 
   #use the same pod generator file using your custom image you have upload in hub.docker.com
+  89  kubectl run my-own-pod --image=gopal1409/multiapp --port=8080 --dry-run=client -o yaml
+   90  kubectl run my-own-pod --image=gopal1409/multiapp --port=8080 --dry-run=client -o yaml > pod4.yml
+   91  kubectl apply -f pod4.yml
+   92  kubectl get pod
+   93  kubectl describe pod my-own-pod
+   94  kubectl get pod
+
