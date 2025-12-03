@@ -1,0 +1,84 @@
+#lets undestand namespace
+   100  kubectl get ns
+  #-A will show all the namespace check what are the namespace which is created while creating your k8s cluster
+  101  kubectl get pod -A -o wide
+##lets create a custom namespace called as dev
+   104  kubectl create ns dev
+  105  kubectl get ns
+ #to get more details about the namespaces
+  107  kubectl describe ns dev
+  108  kubectl get ns
+###lets allocate quota in the namespace
+  nano quota.yml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-resources
+  namespace: dev
+spec:
+  hard:
+    pods: "10" #inside this namespace we can create maximum 10 pods
+    requests.cpu: "1"
+    requests.memory: 1Gi #all the pod inside this namespace can use maximum 1Gi memory
+    limits.cpu: "2"
+    limits.memory: 2Gi #inside the namespace all the pods can use maximum 2Gi memory
+  #########################
+   111  kubectl apply -f quota.yml
+      #this will now show the resource quota as it is looking into default namespace
+  112  kubectl get resourcequota
+      #you can now see it as we are looking into dev namespace
+  113  kubectl -n dev get resourcequota
+  114  kubectl describe ns dev
+      #lets create a pod inside this particular namespace and do the utlization
+      nano qpod.yml
+      #############################
+    #kubectl apply -f nameoftheyaml file 
+#when you run your yaml file it will execute from top to bottom and left to right
+#we are creating a pod 
+apiVersion: v1 #this is the version of the pod api
+kind: Pod #this is the name of the api we are using
+metadata:
+  name: nginx1 #using meta data name we are giving a name to our pod
+  namespace: dev #specifying the namespace where the pod will be created
+spec: #this is the specification of the pod
+  containers: #inside the pod we are defining the containers
+  - name: nginx #this is the name of the container
+    image: nginx:1.14.2 #the image we used for the container
+    resources: #defining resource requests and limits for the container
+      requests:
+        cpu: "400m" #requesting 0.1 CPU for this container
+        memory: "600Mi" #requesting 128Mi memory for this container
+      limits:
+        cpu: "800m" #setting limit of 0.5 CPU for this container
+        memory: "800Mi" #setting limit of 512Mi memory for this container
+    ports:
+    - containerPort: 80 #container is runnign on which port
+##once you create the pod to check the pod in a particular namespace 
+       132  kubectl -n dev get pod
+      #as we allocate quota now we can see the utilization in the namespace
+  133  kubectl describe ns dev
+###############################
+      nano qpod1.yml
+      #############lets create another pod 
+    #kubectl apply -f nameoftheyaml file 
+#when you run your yaml file it will execute from top to bottom and left to right
+#we are creating a pod 
+apiVersion: v1 #this is the version of the pod api
+kind: Pod #this is the name of the api we are using
+metadata:
+  name: nginx2 #using meta data name we are giving a name to our pod
+  namespace: dev #specifying the namespace where the pod will be created
+spec: #this is the specification of the pod
+  containers: #inside the pod we are defining the containers
+  - name: nginx #this is the name of the container
+    image: nginx:1.14.2 #the image we used for the container
+    resources: #defining resource requests and limits for the container
+      requests:
+        cpu: "400m" #requesting 0.1 CPU for this container
+        memory: "700Mi" #requesting 128Mi memory for this container
+      limits:
+        cpu: "400m" #setting limit of 0.5 CPU for this container
+        memory: "1Gi" #setting limit of 512Mi memory for this container
+    ports:
+    - containerPort: 80 #container is runnign on which port
+##when you try to create another pod tell me why you are geeting an error. 
