@@ -45,3 +45,32 @@ spec:
    78  kubectl get pv
    79  kubectl get pvc
 
+#lets create the configmap 
+nano config.yml
+###########################
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-management-config
+data:
+  mysql_usermgmt.sql: |
+    DROP DATABASE IF EXISTS webappdb;
+    CREATE DATABASE webappdb;
+#lets create it
+ 86  kubectl apply -f config.yml
+   87  kubectl get configmap
+#please do not put any secret inside configmap as it is visible
+   88  kubectl describe configmap user-management-config
+##lets create the secret 
+  90  nano secret.yml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-db-secret
+type: Opaque
+data:
+  dbpassword: ZGJwYXNzd29yZDEwMQ==
+
+   91  kubectl apply -f secret.yml
+   92  kubectl get secret
+   93  kubectl describe secret my-db-secret
