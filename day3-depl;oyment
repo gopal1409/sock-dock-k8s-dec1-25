@@ -1,0 +1,30 @@
+ 145  nano dep.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: nginx
+       
+        ports:
+        - containerPort: 80
+
+  146  kubectl apply -f dep.yml
+          #this will show the deployment
+  147  kubectl get deploy
+          #you can see the pod with the deployment 
+  148  kubectl get pod
+          #if you delete the pod please change the pod id with your own pod id
+  149  kubectl delete pod myapp-5d6b777b8-pj6d7
+          #this will show that the pod is back
+  150  kubectl get pod
