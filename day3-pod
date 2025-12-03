@@ -1,0 +1,21 @@
+#we need to write an manifest file to create a pod. 
+  #we can do mistake while writing the manifest file it is of indentation
+  #how to avoid this kind of mistake. 
+  #to create a pod we need two things
+  1. container image
+  2. container is running on which port number
+#lets create our own pod using dry run
+ 75  kubectl run my-first-pod
+  #this will help you to generate your syntax
+   76  kubectl run my-first-pod -h
+  #the below command will show the pod defination or pod yaml file in dry run
+   78  kubectl run my-first-pod --image=nginx --port=80 --dry-run=client -o yaml
+  #you can save the output in a file
+   79  kubectl run my-first-pod --image=nginx --port=80 --dry-run=client -o yaml > pod3.yml
+  #then apply it
+   80  kubectl apply -f pod3.yml
+   81  kubectl get pod
+  #describe command will show the event log of your pod
+   82  kubectl describe pod my-first-pod
+  ######exercise 
+  #use the same pod generator file using your custom image you have upload in hub.docker.com
