@@ -1,0 +1,47 @@
+#login to the lab one and create a directory
+  sudo -i
+  mkdir /mnt/data
+  #you will not see any data realted to your k8s
+  ls
+  ###rest of the exercise you need to do it from your master machine
+  #lets create persistent volume
+   70  nano pv.yml
+apiVersion: v1
+kind: PersistentVolume #we are creating persistent volume
+metadata:
+  name: task-pv-volume
+spec:
+  capacity:
+    storage: 5Gi #which pod is going to use this volume will use 5GI of storage
+  volumeMode: Filesystem #it will look for the filesystem
+  accessModes:
+    - ReadWriteOnce #read only #readwritemany
+
+  storageClassName: slow
+  hostPath:
+    path: "/mnt/data"
+   71  kubectl apply -f pv.yml
+      #once apply you can see get pv show that there is 5 GB volume but it is showing avaiabler 
+   72  kubectl get pv
+      #to attach this volume with your pod we need to create pvc
+      74  nano pvc.yml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: task-pv-claim
+spec:
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: slow
+  accessModes:
+    - ReadWriteOnce
+#get pv will show that pv is showing avaiable
+   76  kubectl get pv
+      #lets apply the pvc
+   77  kubectl apply -f pvc.yml
+      #now get pv will show that pv is bound wiuth pvc
+   78  kubectl get pv
+   79  kubectl get pvc
+
