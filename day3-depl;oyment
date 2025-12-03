@@ -72,4 +72,21 @@ spec: #we are specifying the spec of the deployment
   169  kubectl get rs
   170  kubectl describe rs my-first-deployment-5d6b777b8
 
+#lets do the scaling 
+#the below command will do manual scaling
+ 173  kubectl scale deployment my-first-deployment --replicas=5
+  174  kubectl get deploy
+  175  kubectl get rs
+  176  kubectl get pod
+#this will do autoscaling
+  177  kubectl autoscale deployment my-first-deployment --min=5 --max=10 --cpu-percent=80
+#get hpa will show horizontal autoscaling
+  178  kubectl get hpa
+#you can also see the running configration
+ 181  kubectl get deploy
+  182  kubectl edit deploy my-first-deployment
+#to save the file press Esc :wq
+  183  kubectl get pod
+  184  kubectl edit pod my-first-deployment-5d6b777b8-27cvn
+
 
