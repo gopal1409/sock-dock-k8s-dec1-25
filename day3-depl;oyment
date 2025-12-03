@@ -67,4 +67,9 @@ spec: #we are specifying the spec of the deployment
   163  kubectl get pod
 #check the labels of your deployment
   165  kubectl get pod --show-labels
+#look into the event log of deploy and rs
+  168  kubectl describe deploy my-first-deployment
+  169  kubectl get rs
+  170  kubectl describe rs my-first-deployment-5d6b777b8
+
 
