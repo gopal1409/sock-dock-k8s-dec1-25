@@ -32,3 +32,34 @@ myfirst-node-service       NodePort    10.111.153.110   <none>        80:31385/T
   202  kubectl get svc
   #when you describe the svc you will see that svc is pointing towards all the pod ip address
   203  kubectl describe svc myfirst-node-service
+#lets update the deployment with a new image
+[root@ip-172-31-93-226 ~]$ kubectl set image deployment my-first-deployment myapp=nulldevil/phpsysinfo
+deployment.apps/my-first-deployment image updated
+####lets check the deployment 
+[root@ip-172-31-93-226 ~]$ kubectl get deploy
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+my-first-deployment   5/5     5            5           147m
+
+#####lets check the rs
+[root@ip-172-31-93-226 ~]$ kubectl get rs
+NAME                             DESIRED   CURRENT   READY   AGE
+my-first-deployment-5d6b777b8    0         0         0       148m
+my-first-deployment-6544c8c8cc   5         5         5       64s
+##lets describe the deployment 
+  216  kubectl describe deploy my-first-deployment
+??????#lets check the rollout history
+218  kubectl rollout history deploy my-first-deployment
+#lets check what is there in the revision 1 and in revision 2
+  219  kubectl rollout history deploy my-first-deployment --revision=1
+  220  kubectl rollout history deploy my-first-deployment --revision=2
+#if you want to go to previous version
+ 218  kubectl rollout history deploy my-first-deployment
+  219  kubectl rollout history deploy my-first-deployment --revision=1
+  220  kubectl rollout history deploy my-first-deployment --revision=2
+  221  history
+  222  kubectl describe deploy my-first-deployment
+  223  kubectl get pod -o wide
+  224  kubectl rollout undo deployment my-first-deployment --to-revision=1
+  225  kubectl describe deploy my-first-deployment
+  226  history
+
