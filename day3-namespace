@@ -82,3 +82,4 @@ spec: #this is the specification of the pod
     ports:
     - containerPort: 80 #container is runnign on which port
 ##when you try to create another pod tell me why you are geeting an error. 
+kubectl apply -f qpod1.yml
