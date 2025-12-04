@@ -25,4 +25,54 @@ kube-system   coredns-7c65d6cfc9-tmmdr                   1/1     Running   2 (3h
 NAME         PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
 local-path   rancher.io/local-path   Delete          WaitForFirstConsumer   false                  4s
     #finally we need to create the statefulset 
-    
+      301  vi postgres-stateful.yml
+apiVersion: apps/v1
+kind: StatefulSet #in place of deployment it will be statefulset
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres
+        ports:
+        - containerPort: 5432
+        env:  
+          - name: POSTGRES_PASSWORD
+            value: postgres
+          - name: POSTRES_USER
+            value: postgres
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql 
+          #the volume path we need to map 
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: local-path
+      resources:
+        requests:
+          storage: 1Gi
+
+  302  kubectl apply -f postgres-stateful.yml
+#to check the statefulset
+  303  kubectl get statefulset
+#if you see all the pod in postgress they are created in order
+  304  kubectl get pod
+#check the volume against every single pod we will have individual storage
+  305  kubectl get pvc
+#if you delete any of the stateful pod it will be recreated in the same order and attach with same volume
+  306  kubectl delete pod postgres-1
+  307  kubectl get pod
+
