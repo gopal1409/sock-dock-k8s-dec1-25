@@ -1,0 +1,107 @@
+#first we will expose our mysql database as clusterservice
+  nano mysqlsvc.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+    - port: 3306
+  clusterIP: None
+  #lets apply the file 
+    kubectl apply -f mysqlsvc.yml
+    [root@ip-172-31-93-226 ~]$ kubectl get svc
+NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+
+mysql                      ClusterIP   None             <none>        3306/TCP         53m
+    #once we expose it 
+    #we will deploy the frontend application
+    nano frontend.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usermgmt-webapp
+  labels:
+    app: usermgmt-webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: usermgmt-webapp
+  template:
+    metadata:
+      labels:
+        app: usermgmt-webapp
+    spec:
+    #i want to deploy my front end pod
+    #before i deploy my frontend i want to ensure the connectivity to my database them only it should deploy my frontend.
+      initContainers:
+        - name: init-db
+          image: busybox #using this i can run shell script.
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL DB Server has started";']  
+      containers:
+        - name: usermgmt-webapp
+          image: stacksimplify/kube-usermgmt-webapp:1.0.0-MySQLDB
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOSTNAME
+              value: "mysql"    
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_NAME
+              value: "webappdb"
+            - name: DB_USERNAME
+              value: "root"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-db-secret
+                  key: dbpassword
+#lets apply it
+  271  kubectl apply -f frontend.yml
+  272  kubectl get pod usermgmt-webapp
+  273  kubectl get deploy
+                    #once applied we will expose it using the node port 
+  274  kubectl expose deploy usermgmt-webapp --type=NodePort --name=frontendservice
+                    #check the frontend service 
+  [root@ip-172-31-93-226 ~]$ kubectl get svc
+NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+frontendservice            NodePort    10.108.82.85     <none>        8080:30255/TCP   53m
+  #finally we will copy the node machine ip 
+  #liek this in the browser change the dns name to your first machine dns name
+  http://lab-as-23518.lc.cl-labs.springpeople.com:30255/
+  ##username : admin101 password password101
+    ####then create a new user 
+[root@ip-172-31-93-226 ~]$ kubectl get pod
+NAME                                   READY   STATUS    RESTARTS       AGE
+
+mysql-689574979f-bnthf                 1/1     Running   0              80m
+#change the pod id with your own pod id
+[root@ip-172-31-93-226 ~]$ kubectl exec -it mysql-689574979f-bnthf -- /bin/bash
+    #once login use the mysql prompt
+    root@mysql-689574979f-bnthf:/# mysql -u root -p
+    #password is dbpassword101
+Enter password:
+##once you login 
+  show databases;
+mysql> use webappdb;
+##then check all the tables
+  mysql> show tables;
++--------------------+
+| Tables_in_webappdb |
++--------------------+
+| role               |
+| user               |
+| user_role          |
++--------------------+
+3 rows in se
+  ###
+  mysql> select * from user;
+  #you will see your data entry from spring app
+  exit
+  exit
+                    
