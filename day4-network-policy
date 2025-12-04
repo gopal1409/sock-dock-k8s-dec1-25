@@ -57,4 +57,6 @@ spec:
   260  kubectl -n crm get networkpolicy
 #you can describe the same also
   262  kubectl -n crm describe networkpolicy frontend-policy
-
+#we created a policy which will intiate connection from frontend backend 
+[root@ip-172-31-93-226 ~]$ kubectl -n crm exec -it frontend -- curl backend
+#while testing it is not working
