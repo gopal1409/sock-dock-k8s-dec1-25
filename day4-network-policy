@@ -61,6 +61,26 @@ spec:
 [root@ip-172-31-93-226 ~]$ kubectl -n crm exec -it frontend -- curl backend
 #while testing it is not working
  265  nano backend-policy.yml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-policy #this is the name of the network policy
+  namespace: crm #in the crm namespace
+spec:
+  podSelector: 
+    matchLabels:
+      run: backend
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress: #frontend can intiate connections to backend pods
+  - from: #to accept the traffic from frontend pods
+    - podSelector:
+        matchLabels:
+          run: frontend
+
+        
+  
   266  kubectl apply -f backend-policy.yml
   267  kubectl -n crm get networkpolicy
   268  kubectl -n crm describe networkpolicy backend-policy
