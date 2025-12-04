@@ -72,4 +72,25 @@ command terminated with exit code 6
  270  kubectl -n crm get pod -o wide
 #note down the ip address of the backend and do curl request it will work
   272  kubectl -n crm exec -it frontend -- curl 192.168.0.13
+####lets allow exception in default demy 
+  276  rm default-deny.yml
+  277  nano default-deny.yml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny #this is the name of the network policy
+  namespace: crm #in the crm namespace
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  egress: 
+  - ports:
+      - protocol: TCP
+        port: 53  
+      - protocol: UDP
+        port: 53
+  278  kubectl apply -f default-deny.yml
+  279  kubectl -n crm exec -it frontend -- curl backend
 
