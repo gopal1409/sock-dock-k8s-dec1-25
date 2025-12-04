@@ -1,0 +1,22 @@
+307  wget https://get.helm.sh/helm-v4.0.1-linux-amd64.tar.gz
+  308  tar zxvf helm-v4.0.1-linux-amd64.tar.gz
+  309  cd linux-amd64/
+  310  ls
+  311  cp helm /usr/bin
+  312  cd ..
+  313  helm
+  314  kubectl create namespace argocd
+  315  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  316  curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+  317  sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+  318  rm argocd-linux-amd64
+  #this will give the password or argocd 
+  319  argocd admin initial-password -n argocd
+  320  kubectl get svc -A
+  #go to the third last line and change the clusterip to NodePort
+  321  kubectl -n argocd edit svc argocd-server
+  322  kubectl get svc -A
+  ###3once copy the node machine ip and the argo cd port number 
+#####lets connect an git repo
+
+
