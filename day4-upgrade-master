@@ -1,0 +1,41 @@
+#to upgrade master node we need to first draing the node 
+  [root@ip-172-31-93-226 ~]$ kubectl get nodes -o wide
+NAME               STATUS   ROLES           AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION    CONTAINER-RUNTIME
+ip-172-31-93-198   Ready    <none>          2d    v1.31.9   172.31.93.198   <none>        Ubuntu 24.04.2 LTS   6.14.0-1017-aws   containerd://1.7.28
+ip-172-31-93-226   Ready    control-plane   2d    v1.31.9   172.31.93.226   <none>        Ubuntu 24.04.2 LTS   6.14.0-1017-aws   containerd://1.7.28
+ip-172-31-93-254   Ready    <none>          2d    v1.31.9   172.31.93.254   <none>        Ubuntu 24.04.2 LTS   6.14.0-1017-aws   containerd://1.7.28
+[root@ip-172-31-93-226 ~]$ kubectl drain ip-172-31-93-226 --ignore-daemonsets --delete-emptydir-data
+node/ip-172-31-93-226 cordoned
+Warning: ignoring DaemonSet-managed Pods: kube-system/kube-proxy-vvmkq, kube-system/weave-net-qjdjv
+evicting pod kube-system/coredns-7c65d6cfc9-tmmdr
+evicting pod kube-system/coredns-7c65d6cfc9-8rxhh
+pod/coredns-7c65d6cfc9-tmmdr evicted
+pod/coredns-7c65d6cfc9-8rxhh evicted
+node/ip-172-31-93-226 drained
+[root@ip-172-31-93-226 ~]$ kubectl get nodes
+NAME               STATUS                     ROLES           AGE   VERSION
+ip-172-31-93-198   Ready                      <none>          2d    v1.31.9
+ip-172-31-93-226   Ready,SchedulingDisabled   control-plane   2d    v1.31.9
+ip-172-31-93-254   Ready                      <none>          2d    v1.31.9
+#once we drain the node we need to disable the api server 
+  [root@ip-172-31-93-226 ~]$ killall -s SIGTERM kube-apiserver
+##once disabled we need to check the version of k8s
+   287  sudo apt update
+  #this will show what are the latest verison of k8s is avaiable 
+  288  sudo apt-cache madison kubeadm
+  #lets update with apt command
+    296  apt-get install kubeadm=1.32.10-1.1 kubelet=1.32.10-1.1 kubectl=1.32.10-1.1
+   298  apt-mark hold kubeadm
+  299  kubeadm upgrade plan
+
+  ##once upgrade we need to check the upgrade plan and apply it
+kubeadm upgrade apply v1.32.10
+#once the upgrade finish uncordon the note which will disable the scheduling 
+  [root@ip-172-31-93-226 ~]$ kubectl uncordon ip-172-31-93-226
+node/ip-172-31-93-226 uncordoned
+[root@ip-172-31-93-226 ~]$ kubectl get nodes
+NAME               STATUS   ROLES           AGE   VERSION
+ip-172-31-93-198   Ready    <none>          2d    v1.31.9
+ip-172-31-93-226   Ready    control-plane   2d    v1.32.10
+ip-172-31-93-254   Ready    <none>          2d    v1.31.9
+[root@ip-172-31-93-226 ~]$
