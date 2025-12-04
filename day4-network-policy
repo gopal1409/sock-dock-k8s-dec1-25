@@ -32,4 +32,29 @@ spec:
   269  kubectl -n crm describe networkpolicy
     #now if you try to send an curl request it will not work
   270  kubectl -n crm exec -it backend -- curl frontend
+#lets create an egress policy where frontend can intiate connection to backend
+ 257  nano frontend-policy.yml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: frontend-policy #this is the name of the network policy
+  namespace: crm #in the crm namespace
+spec:
+  podSelector: 
+    matchLabels:
+      run: frontend
+  policyTypes:
+  - Ingress
+  - Egress
+  egress: #frontend can intiate connections to backend pods
+  - to:
+    - podSelector:
+        matchLabels:
+          run: backend
+
+  258  kubectl apply -f frontend-policy.yml
+ #check a front end policy is created 
+  260  kubectl -n crm get networkpolicy
+#you can describe the same also
+  262  kubectl -n crm describe networkpolicy frontend-policy
 
