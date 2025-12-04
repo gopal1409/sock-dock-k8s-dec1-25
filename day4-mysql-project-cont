@@ -96,5 +96,7 @@ Enter password:
   show database home;
 ##finally in the node machine we need to have two folder one is webappdb another is home
   #login to the first node machine
+sudo -i
+#check the mnt data folder you will see your database
   
           
