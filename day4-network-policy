@@ -1,0 +1,35 @@
+#lets create a namespace 
+   255  kubectl create ns crm
+  256  kubectl get ns crm
+  #inside the namespace we will create two pod 
+  257  kubectl -n crm run frontend --image=nginx
+  258  kubectl -n crm run backend --image=nginx
+  #we will expose this pod with service the default is cluster ip
+  259  kubectl -n crm expose pod frontend --port=80
+  260  kubectl -n crm expose pod backend --port=80
+  261  kubectl -n crm get pod,svc
+  #now if we test the connection between the pod service they are communicateion
+  262  kubectl -n crm exec -it frontend -- curl backend
+  263  kubectl -n crm exec -it backend -- curl frontend
+  ##lets disable the communication
+   265  nano default-deny.yml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny #this is the name of the network policy
+  namespace: crm #in the crm namespace
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  
+  
+  266  kubectl apply -f default-deny.yml
+  #this will show the network policy
+  268  kubectl -n crm get networkpolicy
+    ####you get more detail about network policy
+  269  kubectl -n crm describe networkpolicy
+    #now if you try to send an curl request it will not work
+  270  kubectl -n crm exec -it backend -- curl frontend
+
