@@ -1,0 +1,100 @@
+#lets create the mysql container 
+  #check the name of the node where you need to deploy your pod 
+  [root@ip-172-31-93-226 ~]$ kubectl get nodes
+NAME               STATUS   ROLES           AGE   VERSION
+ip-172-31-93-198   Ready    <none>          42h   v1.31.9
+ip-172-31-93-226   Ready    control-plane   42h   v1.31.9
+ip-172-31-93-254   Ready    <none>          42h   v1.31.9
+#copy the name of the node1 
+  #once copied we will deploy the mysql pod on line 41 change the node name to your node name 
+  nano mysql.yml
+  ##############################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql 
+    spec:
+      containers:
+      - name: myapp
+        image: mysql:5.6 
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD #this mysql root password secret manager 
+          valueFrom:
+            secretKeyRef:
+              name: my-db-secret #this is the name of the secret we defin
+              key: dbpassword #this is the key inside the secret
+        volumeMounts:
+        - name: mysql-sc
+          mountPath: /var/lib/mysql #this is the path inside the container where the volume will be mounted
+        - name: user-data
+          mountPath: /docker-entrypoint-initdb.d #this is the path inside the container where the init script will be mounted
+      nodeName: ip-172-31-93-198 #kindly modify the name name before you deploy
+      volumes:
+      - name: mysql-sc #line number 26 which the path of your contianer volume
+      #this path is mapped to your pvc 
+        persistentVolumeClaim:
+          claimName: task-pv-claim #this is the name of the pvc we defined
+      - name: user-data
+        configMap:
+          name: user-management-config #this is the name of the configmap we defined
+
+            #lets apply it 
+             258  kubectl apply -f mysql.yml
+  259  kubectl get deploy
+#lets verify that pvc secret and configmap are attached or not 
+          260  kubectl describe deploy mysql
+##check this three lines 
+         1.    Environment:
+      MYSQL_ROOT_PASSWORD:  <set to the key 'dbpassword' in secret 'my-db-secret'>  Optional: false
+   2. Mounts:
+      /docker-entrypoint-initdb.d from user-data (rw)
+      /var/lib/mysql from mysql-sc (rw)
+ 3. Volumes:
+   mysql-sc:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  task-pv-claim
+    ReadOnly:   false
+4.   user-data:
+    Type:          ConfigMap (a volume populated by a ConfigMap)
+    Name:          user-management-config
+    #once done lets verify all this 
+      1. we will first login inside the mysql database 
+      [root@ip-172-31-93-226 ~]$ kubectl get pod
+NAME                                   READY   STATUS    RESTARTS      AGE
+
+mysql-689574979f-bnthf                 1/1     Running   0             10m
+      #replace the mysql pod with your own pod it
+[root@ip-172-31-93-226 ~]$ kubectl exec -it mysql-689574979f-bnthf -- /bin/bash
+root@mysql-689574979f-bnthf:/#
+#lets login to mysql database using the password dbpassword101
+      root@mysql-689574979f-bnthf:/# mysql -u root -p
+Enter password:
+##once you login show database will show you the webappdb
+  mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| webappdb           |
++--------------------+
+4 rows in set (0.00 sec)
+
+#lets create a new database
+  create database home;
+  show database home;
+##finally in the node machine we need to have two folder one is webappdb another is home
+  #login to the first node machine
+  
+          
