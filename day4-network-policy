@@ -60,3 +60,16 @@ spec:
 #we created a policy which will intiate connection from frontend backend 
 [root@ip-172-31-93-226 ~]$ kubectl -n crm exec -it frontend -- curl backend
 #while testing it is not working
+ 265  nano backend-policy.yml
+  266  kubectl apply -f backend-policy.yml
+  267  kubectl -n crm get networkpolicy
+  268  kubectl -n crm describe networkpolicy backend-policy
+#now also if i try to communicate it will not work
+[root@ip-172-31-93-226 ~]$  kubectl -n crm exec -it frontend -- curl backend
+curl: (6) Could not resolve host: backend
+command terminated with exit code 6
+#why the communication is not workking
+ 270  kubectl -n crm get pod -o wide
+#note down the ip address of the backend and do curl request it will work
+  272  kubectl -n crm exec -it frontend -- curl 192.168.0.13
+
