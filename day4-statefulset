@@ -1,0 +1,28 @@
+#lets create the headless service 
+   293  nano postgres-svc.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+  clusterIP: None #we are using headless service for statefulset
+
+  294  kubectl apply -f postgres-svc.yml
+    #the below command will show an svc withought an cluster ip address
+    kubectl get svc
+[root@ip-172-31-93-226 ~]$ kubectl get pod -A
+NAMESPACE     NAME                                       READY   STATUS    RESTARTS       AGE
+
+kube-system   coredns-7c65d6cfc9-8rxhh                   1/1     Running   2 (3h7m ago)   44h
+kube-system   coredns-7c65d6cfc9-tmmdr                   1/1     Running   2 (3h7m ago)   44
+    ####lets deploy the dynamic volume
+    kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.24/deploy/local-path-storage.yaml
+    [root@ip-172-31-93-226 ~]$ kubectl get sc
+NAME         PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+local-path   rancher.io/local-path   Delete          WaitForFirstConsumer   false                  4s
+    #finally we need to create the statefulset 
+    
